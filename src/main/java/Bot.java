@@ -1,3 +1,10 @@
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -23,6 +30,7 @@ public class Bot extends TelegramLongPollingBot {
 
     Integer correctAnswers = 0;
     Integer answeredQuestions = 0;
+    String currentTask = "-";
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -41,9 +49,46 @@ public class Bot extends TelegramLongPollingBot {
             response = "Start?";
             sendInlineKeyboard(chatId, response, "Start", "start");
         } else {
-            response = "You selected: " + message.getText();
+            if (currentTask.equals("1")) {
+                String input = message.getText();
+                String[] words = input.split(" ");
+
+                if (words.length >= 4) {
+                    String mail = words[0];
+                    String name = words[1] + " " + words[2] + " " + words[3];
+                    System.out.println(mail);
+                    System.out.println(name);
+
+                    User user = new User(chatId, mail, name);
+                    System.out.println(user.toString());
+
+                    StandardServiceRegistry standardServiceRegistry = new StandardServiceRegistryBuilder()
+                            .configure("hibernate.cfg.xml").build();
+                    Metadata metadata = new MetadataSources(standardServiceRegistry)
+                            .getMetadataBuilder()
+                            .build();
+                    SessionFactory sessionFactory = metadata.getSessionFactoryBuilder()
+                            .build();
+                    Session session = sessionFactory.openSession();
+                    Transaction transaction = session.beginTransaction();
+
+                    session.save(user);
+
+                    transaction.commit();
+                    sessionFactory.close();
+
+                    response = "Данные у нас есть, за вами выехали.";
+                    sendMessage(chatId, response);
+
+                } else {
+                    response = "Недостаточно данных для создания пользователя";
+                    sendMessage(chatId, response);
+                    return;
+                }
+            }
             sendMessage(chatId, response);
         }
+
     }
 
     private void handleCallbackQuery(CallbackQuery callbackQuery) {
@@ -51,7 +96,7 @@ public class Bot extends TelegramLongPollingBot {
         String chatId = callbackQuery.getMessage().getChatId().toString();
         String response = "";
 
-        if (callbackData.equals("start")){
+        if (callbackData.equals("start") && answeredQuestions == 0){
             firstQuestion(chatId);
         } else if (callbackData.contains("q") && answeredQuestions == 0){
             answeredQuestions++;
@@ -61,7 +106,7 @@ public class Bot extends TelegramLongPollingBot {
             secondQuestion(chatId);
         }else if (callbackData.contains("w") && answeredQuestions == 1){
             answeredQuestions++;
-            if (callbackData.equals("w2")){
+            if (callbackData.equals("w3")){
                 correctAnswers++;
             }
             thirdQuestion(chatId);
@@ -76,11 +121,18 @@ public class Bot extends TelegramLongPollingBot {
             if (callbackData.equals("r4")){
                 correctAnswers++;
             }
-            response = "Вы ответили верно на: " + correctAnswers.toString() + " вопроса.";
+            response = "Вы ответили верно на " + correctAnswers*100/answeredQuestions + "%";
             sendMessage(chatId, response);
-            answeredQuestions = correctAnswers = 0;
             response = "Еще раз?";
             sendInlineKeyboard(chatId, response, "Start", "start");
+            if (correctAnswers*100/answeredQuestions>70){
+                response = "Вы подходите. Отправье теперь нам вашу почту и ФИО. Отправляйте ваши данные через пробелы и без лишних символов и слов.";
+                currentTask = "1";
+            } else{
+                response = "Вы самое слабое звено.";
+            }
+            sendMessage(chatId, response);
+
         }
     }
 
