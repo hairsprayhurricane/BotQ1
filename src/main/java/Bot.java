@@ -45,7 +45,7 @@ public class Bot extends TelegramLongPollingBot {
         String chatId = message.getChatId().toString();
         String response = "";
 
-        if (message.getText().equals("/start_test") && answeredQuestions == 0) {
+        if ( (message.getText().equals("/start_test") || message.getText().equals("/start")) && answeredQuestions == 0) {
             response = "Start?";
             sendInlineKeyboard(chatId, response, "Start", "start");
         } else {
@@ -181,6 +181,9 @@ public class Bot extends TelegramLongPollingBot {
         String response = "Какая разница string stringbuilder?";
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        List<InlineKeyboardButton> row3 = new ArrayList<>();
+        List<InlineKeyboardButton> row4 = new ArrayList<>();
         InlineKeyboardButton button1 = new InlineKeyboardButton();
         InlineKeyboardButton button2 = new InlineKeyboardButton();
         InlineKeyboardButton button3 = new InlineKeyboardButton();
@@ -194,11 +197,14 @@ public class Bot extends TelegramLongPollingBot {
         button4.setText("Класс и примитив");
         button4.setCallbackData("q4");
         row1.add(button1);
-        row1.add(button2);
-        row1.add(button3);
-        row1.add(button4);
+        row2.add(button2);
+        row3.add(button3);
+        row4.add(button4);
 
         keyboard.add(row1);
+        keyboard.add(row2);
+        keyboard.add(row3);
+        keyboard.add(row4);
 
         inlineKeyboardMarkup.setKeyboard(keyboard);
 
@@ -220,6 +226,9 @@ public class Bot extends TelegramLongPollingBot {
         String response = "Выберите примитивы";
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        List<InlineKeyboardButton> row3 = new ArrayList<>();
+        List<InlineKeyboardButton> row4 = new ArrayList<>();
         InlineKeyboardButton button1 = new InlineKeyboardButton();
         InlineKeyboardButton button2 = new InlineKeyboardButton();
         InlineKeyboardButton button3 = new InlineKeyboardButton();
@@ -233,11 +242,14 @@ public class Bot extends TelegramLongPollingBot {
         button4.setText("boolean float");
         button4.setCallbackData("w4");
         row1.add(button1);
-        row1.add(button2);
-        row1.add(button3);
-        row1.add(button4);
+        row2.add(button2);
+        row3.add(button3);
+        row4.add(button4);
 
         keyboard.add(row1);
+        keyboard.add(row2);
+        keyboard.add(row3);
+        keyboard.add(row4);
 
         inlineKeyboardMarkup.setKeyboard(keyboard);
 
@@ -259,6 +271,8 @@ public class Bot extends TelegramLongPollingBot {
         String response = "Чем локалы лучше деты?";
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        List<InlineKeyboardButton> row3 = new ArrayList<>();
         InlineKeyboardButton button1 = new InlineKeyboardButton();
         InlineKeyboardButton button2 = new InlineKeyboardButton();
         InlineKeyboardButton button3 = new InlineKeyboardButton();
@@ -270,11 +284,12 @@ public class Bot extends TelegramLongPollingBot {
         button3.setCallbackData("e3");
 
         row1.add(button1);
-        row1.add(button2);
-        row1.add(button3);
-
+        row2.add(button2);
+        row3.add(button3);
 
         keyboard.add(row1);
+        keyboard.add(row2);
+        keyboard.add(row3);
 
         inlineKeyboardMarkup.setKeyboard(keyboard);
 
@@ -296,6 +311,9 @@ public class Bot extends TelegramLongPollingBot {
         String response = "Как слово класс ключевое объевлять?";
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        List<InlineKeyboardButton> row3 = new ArrayList<>();
+        List<InlineKeyboardButton> row4 = new ArrayList<>();
         InlineKeyboardButton button1 = new InlineKeyboardButton();
         InlineKeyboardButton button2 = new InlineKeyboardButton();
         InlineKeyboardButton button3 = new InlineKeyboardButton();
@@ -309,11 +327,14 @@ public class Bot extends TelegramLongPollingBot {
         button4.setText("Extends");
         button4.setCallbackData("r4");
         row1.add(button1);
-        row1.add(button2);
-        row1.add(button3);
-        row1.add(button4);
+        row2.add(button2);
+        row3.add(button3);
+        row4.add(button4);
 
         keyboard.add(row1);
+        keyboard.add(row2);
+        keyboard.add(row3);
+        keyboard.add(row4);
 
         inlineKeyboardMarkup.setKeyboard(keyboard);
 
