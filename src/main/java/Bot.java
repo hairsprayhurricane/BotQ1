@@ -35,17 +35,17 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            handleMessage(update.getMessage());
+            handleMessage(update.getMessage(), update);
         } else if (update.hasCallbackQuery()) {
             handleCallbackQuery(update.getCallbackQuery());
         }
     }
 
-    private void handleMessage(Message message) {
+    private void handleMessage(Message message, Update update) {
         String chatId = message.getChatId().toString();
         String response = "";
 
-        if (message.getText().equals("/start_test")) {
+        if (message.getText().equals("/start_test") && answeredQuestions == 0) {
             response = "Start?";
             sendInlineKeyboard(chatId, response, "Start", "start");
         } else {
@@ -58,6 +58,7 @@ public class Bot extends TelegramLongPollingBot {
                     String name = words[1] + " " + words[2] + " " + words[3];
                     System.out.println(mail);
                     System.out.println(name);
+
 
                     User user = new User(chatId, mail, name);
                     System.out.println(user.toString());
@@ -77,8 +78,8 @@ public class Bot extends TelegramLongPollingBot {
                     transaction.commit();
                     sessionFactory.close();
 
-                    response = "Данные у нас есть, за вами выехали.";
-                    sendMessage(chatId, response);
+                    sendMessage(chatId, "Данные у нас есть, за вами выехали.");
+                    sendMessage("5884887922", "Новый кандидат: @" + update.getMessage().getFrom().getUserName()); // Это чат, мой второй аккаунт, куда кидается данные об пользователе
 
                 } else {
                     response = "Недостаточно данных для создания пользователя";
@@ -96,7 +97,7 @@ public class Bot extends TelegramLongPollingBot {
         String chatId = callbackQuery.getMessage().getChatId().toString();
         String response = "";
 
-        if (callbackData.equals("start") && answeredQuestions == 0){
+        if (callbackData.equals("start") && answeredQuestions == 0 && currentTask != "1"){
             firstQuestion(chatId);
         } else if (callbackData.contains("q") && answeredQuestions == 0){
             answeredQuestions++;
@@ -123,8 +124,8 @@ public class Bot extends TelegramLongPollingBot {
             }
             response = "Вы ответили верно на " + correctAnswers*100/answeredQuestions + "%";
             sendMessage(chatId, response);
-            response = "Еще раз?";
-            sendInlineKeyboard(chatId, response, "Start", "start");
+//            response = "Еще раз?";
+//            sendInlineKeyboard(chatId, response, "Start", "start");
             if (correctAnswers*100/answeredQuestions>70){
                 response = "Вы подходите. Отправье теперь нам вашу почту и ФИО. Отправляйте ваши данные через пробелы и без лишних символов и слов.";
                 currentTask = "1";
